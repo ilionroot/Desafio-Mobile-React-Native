@@ -29,10 +29,16 @@ const Home = () => {
   const [repos, setRepos] = useState([]);
 
   const search = async () => {
-    const { data: userData } = await api.get(`/users/${userText}`);
-    const { data: reposData } = await api.get(`/users/${userText}/repos`);
-    setUser(userData);
-    setRepos(reposData);
+    try {
+      const { data: userData } = await api.get(`/users/${userText}`);
+      const { data: reposData } = await api.get(`/users/${userText}/repos`);
+      setUser(userData);
+      setRepos(reposData);
+    } catch (error) {
+      // Nao apliquei tratativa de erro
+
+      console.log(error);
+    }
   };
 
   const showReps = () => {

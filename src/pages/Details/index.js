@@ -65,57 +65,64 @@ const Details = () => {
   };
 
   const getData = async () => {
-    const { data: issuesData } = await api.get(
-      `${params.issues_url.slice(0, -9)}`,
-      {
-        baseURL: "",
-      }
-    );
-    const { data: langsData } = await api.get(`${params.languages_url}`, {
-      baseURL: "",
-    });
-    setIssues(issuesData);
-
-    let newLangsData = [];
-    let totalAmount = 0;
-
-    for (let _key in langsData) {
-      totalAmount += langsData[_key];
-    }
-
-    let exists = false;
-
-    for (let key in langsData) {
-      let color =
-        colors.current[Math.floor(Math.random() * colors.current.length)];
-      exists = usedColors.includes(color);
-
-      while (!exists) {
-        if (!usedColors.includes(color)) {
-          exists = true;
-          setUsedColors([...usedColors, color]);
-        } else {
-          color =
-            colors.current[Math.floor(Math.random() * colors.current.length)];
+    try {
+      const { data: issuesData } = await api.get(
+        `${params.issues_url.slice(0, -9)}`,
+        {
+          baseURL: "",
         }
+      );
+      const { data: langsData } = await api.get(`${params.languages_url}`, {
+        baseURL: "",
+      });
+
+      setIssues(issuesData);
+
+      let newLangsData = [];
+      let totalAmount = 0;
+
+      for (let _key in langsData) {
+        totalAmount += langsData[_key];
       }
 
-      let amount = Number(
-        parseFloat((langsData[key] / totalAmount) * 100).toFixed(2)
-      );
+      let exists = false;
 
-      newLangsData.push({
-        name: key,
-        amount,
-        color,
-        legendFontColor: color,
-        legendFontSize: 12,
-        legendFontWeight: "bold",
-        legendFontStrokeWidth: 0.1,
-        legendFontStroke: "black",
-      });
+      for (let key in langsData) {
+        let color =
+          colors.current[Math.floor(Math.random() * colors.current.length)];
+        exists = usedColors.includes(color);
+
+        while (!exists) {
+          if (!usedColors.includes(color)) {
+            exists = true;
+            setUsedColors([...usedColors, color]);
+          } else {
+            color =
+              colors.current[Math.floor(Math.random() * colors.current.length)];
+          }
+        }
+
+        let amount = Number(
+          parseFloat((langsData[key] / totalAmount) * 100).toFixed(2)
+        );
+
+        newLangsData.push({
+          name: key,
+          amount,
+          color,
+          legendFontColor: color,
+          legendFontSize: 12,
+          legendFontWeight: "bold",
+          legendFontStrokeWidth: 0.1,
+          legendFontStroke: "black",
+        });
+      }
+      setLangs(newLangsData);
+    } catch (error) {
+      // Nao apliquei tratativa de erro
+
+      console.log(error);
     }
-    setLangs(newLangsData);
   };
 
   useEffect(() => {
